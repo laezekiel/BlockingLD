@@ -1,4 +1,6 @@
-﻿ using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -113,6 +115,9 @@ namespace StarterAssets
         private bool _hasAnimator;
         private bool _IsCrouching;
 
+        private Dictionary<DoorLockType,bool> _CanOpen = new Dictionary<DoorLockType,bool>();
+        public Dictionary<DoorLockType,bool> CanOpen {  get { return _CanOpen; } set { _CanOpen = value; } }
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -133,6 +138,13 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+
+
+            foreach (DoorLockType lType in Enum.GetValues(typeof(DoorLockType)))
+            {
+                _CanOpen.Add(lType, false);
+            }
+            _CanOpen[DoorLockType.None] = true;
         }
 
         private void Start()
@@ -402,7 +414,7 @@ namespace StarterAssets
             {
                 if (FootstepAudioClips.Length > 0)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
+                    var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
                     AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
                 }
             }

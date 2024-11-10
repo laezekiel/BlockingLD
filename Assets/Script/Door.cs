@@ -31,6 +31,12 @@ public class Door : MonoBehaviour
         // Reusable 
         m_Door?.SetActive(m_CloseOnStart);
 
+        Redress();
+
+    }
+    public void Redress(bool pTargetCan = false)
+    {
+
         switch (m_Type)
         {
             case DoorLockType.Permanent:
@@ -55,15 +61,14 @@ public class Door : MonoBehaviour
             default:
                 // Custom 
                 m_ButtonGreyFront?.SetActive(false);
-                m_ButtonBlueFront?.SetActive(false);
-                m_ButtonRedFront?.SetActive(true);
+                m_ButtonBlueFront?.SetActive(pTargetCan ? true : false);
+                m_ButtonRedFront?.SetActive(pTargetCan ? false : true);
                 m_ButtonGreyBack?.SetActive(false);
-                m_ButtonBlueBack?.SetActive(false);
-                m_ButtonRedBack?.SetActive(true);
+                m_ButtonBlueBack?.SetActive(pTargetCan ? true : false);
+                m_ButtonRedBack?.SetActive(pTargetCan ? false : true);
                 break;
         }
     }
-
 
     // Reusable Methods
     public virtual void Open()
@@ -84,19 +89,11 @@ public class Door : MonoBehaviour
 
             if ((m_Type == DoorLockType.Permanent || (m_Type == DoorLockType.None && m_CloseOnStart == false)) && !m_Door.activeSelf) return;
 
-            if (m_Type == DoorLockType.None) Open();
-            else
+            if (lPlayer.CanOpen[m_Type]) 
             {
-                switch (m_Type)
-                {
-                    case DoorLockType.SecurityGuardKey:
-                        // Custom
-                        break;
-                    case DoorLockType.Suits:
-                        // Custom
-                        break;
-                    default: return;
-                }
+                Open();
+
+                Redress(true);
             }
         }
     }
@@ -111,20 +108,7 @@ public class Door : MonoBehaviour
 
             if ((m_Type == DoorLockType.Permanent || (m_Type == DoorLockType.None && m_CloseOnStart == false)) && m_Door.activeSelf && Count == 0) return;
 
-            if (m_Type == DoorLockType.None) Close();
-            else
-            {
-                switch (m_Type)
-                {
-                    case DoorLockType.SecurityGuardKey:
-                        // Custom
-                        break;
-                    case DoorLockType.Suits:
-                        // Custom
-                        break;
-                    default: return;
-                }
-            }
+            if (lPlayer.CanOpen[m_Type]) Close();
         }
     }
 
